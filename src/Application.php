@@ -89,7 +89,7 @@ final class Application implements ApplicationInterface
         return $this->server['REQUEST_METHOD'];
     }
 
-    private function resolveInstance(string $name, string $key): ?object
+    private function resolveInstance(string $name, string $key): mixed
     {
         if (isset($this->$name)) {
             return $this->$name;
@@ -99,13 +99,7 @@ final class Application implements ApplicationInterface
             return null;
         }
 
-        $instance = $this->container->get($key);
-
-        if (false === is_object($instance)) {
-            return null;
-        }
-
-        return $instance;
+        return $this->container->get($key);
     }
 
     private function getServerRequestFactory(): ServerRequestFactoryInterface
@@ -113,7 +107,7 @@ final class Application implements ApplicationInterface
         $type = ServerRequestFactoryInterface::class;
         $instance = $this->resolveInstance('serverRequestFactory', $type);
 
-        if (null !== $instance && is_a($instance, $type)) {
+        if (is_object($instance) && is_a($instance, $type)) {
             return $this->serverRequestFactory = $instance;
         }
 
@@ -144,7 +138,7 @@ final class Application implements ApplicationInterface
         $type = RequestHandlerResolverInterface::class;
         $instance = $this->resolveInstance('requestHandlerResolevr', $type);
 
-        if (null !== $instance && is_a($instance, $type)) {
+        if (is_object($instance) && is_a($instance, $type)) {
             return $this->requestHandlerResolevr = $instance;
         }
 
@@ -156,7 +150,7 @@ final class Application implements ApplicationInterface
         $type = RouterInterface::class;
         $instance = $this->resolveInstance('router', $type);
 
-        if (null !== $instance && is_a($instance, $type)) {
+        if (is_object($instance) && is_a($instance, $type)) {
             return $this->router = $instance;
         }
 
@@ -168,7 +162,7 @@ final class Application implements ApplicationInterface
         $type = ExceptionHandlerInterface::class;
         $instance = $this->resolveInstance('exceptionHandler', $type);
 
-        if (null !== $instance && is_a($instance, $type)) {
+        if (is_object($instance) && is_a($instance, $type)) {
             return $this->exceptionHandler = $instance;
         }
 
@@ -180,7 +174,7 @@ final class Application implements ApplicationInterface
         $type = ResponseEmitterInterface::class;
         $instance = $this->resolveInstance('exceptionHandler', $type);
 
-        if (null !== $instance && is_a($instance, $type)) {
+        if (is_object($instance) && is_a($instance, $type)) {
             return $this->responseEmitter = $instance;
         }
 

@@ -41,6 +41,29 @@ final class ApplicationTest extends TestCase
         ob_end_clean();
     }
 
+    public function testContainerDependencies(): void
+    {
+        $application = new Application(
+            container: new SimpleContainer(),
+            server: [
+                'REQUEST_METHOD' => 'GET',
+                'HTTP_HOST' => 'example.org',
+                'REQUEST_URI' => '/',
+            ]
+        );
+
+        $application->get('/', 'home', function () {
+            return new Response(200, [], 'It works!');
+        });
+
+        ob_start();
+
+        $application->run();
+        $this->assertSame('It works!', ob_get_contents());
+
+        ob_end_clean();
+    }
+
     public function testConstructArguments(): void
     {
         $application = new Application(
@@ -80,6 +103,44 @@ final class ApplicationTest extends TestCase
             'HTTP_HOST' => 'example.org',
             'REQUEST_URI' => '/',
         ]);
+
+        ob_start();
+
+        $application->run();
+        $this->assertStringContainsString('not found', (string) ob_get_contents());
+
+        ob_end_clean();
+    }
+
+    public function testNotFoundWithExceptionHandler(): void
+    {
+        $application = new Application(
+            exceptionHandler: new ExceptionHandler(),
+            server: [
+                'REQUEST_METHOD' => 'GET',
+                'HTTP_HOST' => 'example.org',
+                'REQUEST_URI' => '/',
+            ]
+        );
+
+        ob_start();
+
+        $application->run();
+        $this->assertStringContainsString('not found', (string) ob_get_contents());
+
+        ob_end_clean();
+    }
+
+    public function testNotFoundWithContainer(): void
+    {
+        $application = new Application(
+            container: new SimpleContainer(),
+            server: [
+                'REQUEST_METHOD' => 'GET',
+                'HTTP_HOST' => 'example.org',
+                'REQUEST_URI' => '/',
+            ]
+        );
 
         ob_start();
 
