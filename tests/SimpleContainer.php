@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\HttpFactory;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Log\LoggerInterface;
 use Thingston\Http\Exception\Handler\ExceptionHandler;
 use Thingston\Http\Exception\Handler\ExceptionHandlerInterface;
 use Thingston\Http\Response\ResponseEmitter;
@@ -16,6 +17,7 @@ use Thingston\Http\Router\RequestHandlerResolver;
 use Thingston\Http\Router\RequestHandlerResolverInterface;
 use Thingston\Http\Router\Router;
 use Thingston\Http\Router\RouterInterface;
+use Thingston\Log\LogManager;
 
 final class SimpleContainer implements ContainerInterface
 {
@@ -31,6 +33,7 @@ final class SimpleContainer implements ContainerInterface
         $this->services[RequestHandlerResolverInterface::class] = new RequestHandlerResolver($this);
         $this->services[ResponseEmitterInterface::class] = new ResponseEmitter();
         $this->services[ExceptionHandlerInterface::class] = new ExceptionHandler();
+        $this->services[LoggerInterface::class] = new LogManager();
     }
 
     public function get(string $id): mixed

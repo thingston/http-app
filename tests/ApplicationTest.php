@@ -18,6 +18,7 @@ use Thingston\Http\Router\RouteCollectionInterface;
 use Thingston\Http\Router\RouteInterface;
 use Thingston\Http\Router\Router;
 use Thingston\Http\Router\RouterInterface;
+use Thingston\Log\LogManager;
 
 final class ApplicationTest extends TestCase
 {
@@ -116,6 +117,25 @@ final class ApplicationTest extends TestCase
     {
         $application = new Application(
             exceptionHandler: new ExceptionHandler(),
+            server: [
+                'REQUEST_METHOD' => 'GET',
+                'HTTP_HOST' => 'example.org',
+                'REQUEST_URI' => '/',
+            ]
+        );
+
+        ob_start();
+
+        $application->run();
+        $this->assertStringContainsString('not found', (string) ob_get_contents());
+
+        ob_end_clean();
+    }
+
+    public function testNotFoundWithLogger(): void
+    {
+        $application = new Application(
+            logger: new LogManager(),
             server: [
                 'REQUEST_METHOD' => 'GET',
                 'HTTP_HOST' => 'example.org',

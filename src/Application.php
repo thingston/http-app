@@ -11,6 +11,7 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Thingston\Http\Exception\Handler\ExceptionHandler;
 use Thingston\Http\Exception\Handler\ExceptionHandlerInterface;
 use Thingston\Http\Exception\InternalServerErrorException;
@@ -47,6 +48,7 @@ final class Application implements ApplicationInterface
         private ?RequestHandlerResolverInterface $requestHandlerResolevr = null,
         private ?ResponseEmitterInterface $responseEmitter = null,
         private ?ExceptionHandlerInterface $exceptionHandler = null,
+        private ?LoggerInterface $logger = null,
         ?array $server = null
     ) {
         $this->container = $container;
@@ -157,6 +159,18 @@ final class Application implements ApplicationInterface
         return $this->router = new Router();
     }
 
+    private function getLogger(): LoggerInterface
+    {
+        $type = LoggerInterface::class;
+        $instance = $this->resolveInstance('logger', $type);
+
+        if (is_object($instance) && is_a($instance, $type)) {
+            return $this->logger = $instance;
+        }
+
+        return $this->logger = new \Thingston\Log\LogManager();
+    }
+
     private function getExceptionHandler(): ExceptionHandlerInterface
     {
         $type = ExceptionHandlerInterface::class;
@@ -166,7 +180,9 @@ final class Application implements ApplicationInterface
             return $this->exceptionHandler = $instance;
         }
 
-        return $this->exceptionHandler = new ExceptionHandler();
+        return $this->exceptionHandler = new ExceptionHandler(
+            logger: $this->getLogger()
+        );
     }
 
     private function getResponseEmitter(): ResponseEmitterInterface
