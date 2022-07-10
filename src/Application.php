@@ -23,6 +23,8 @@ use Thingston\Http\Router\RouteCollectionInterface;
 use Thingston\Http\Router\RouteInterface;
 use Thingston\Http\Router\Router;
 use Thingston\Http\Router\RouterInterface;
+use Thingston\Log\LogManager;
+use Thingston\Settings\SettingsInterface;
 use Throwable;
 
 final class Application implements ApplicationInterface
@@ -43,6 +45,7 @@ final class Application implements ApplicationInterface
      */
     public function __construct(
         private ?ContainerInterface $container = null,
+        private ?SettingsInterface $settings = null,
         private ?RouterInterface $router = null,
         private ?ServerRequestFactoryInterface $serverRequestFactory = null,
         private ?RequestHandlerResolverInterface $requestHandlerResolevr = null,
@@ -58,6 +61,8 @@ final class Application implements ApplicationInterface
         $this->exceptionHandler = $exceptionHandler;
         $this->serverRequestFactory = $serverRequestFactory;
         $this->server = $server ?? $_SERVER;
+
+        $this->setDefaultTimezone();
 
         $this->assertServerGlobals('REQUEST_METHOD');
         $this->assertServerGlobals('HTTP_HOST');
@@ -78,6 +83,26 @@ final class Application implements ApplicationInterface
         }
 
         $this->getResponseEmitter()->emit($response);
+    }
+
+    private function setDefaultTimezone(): void
+    {
+        $settings = $this->getSettings();
+
+        if (false === $settings->has(ApplicationSettings::TIMEZONE)) {
+            date_default_timezone_set('UTC');
+            return;
+        }
+
+        $timezone = $settings->get(ApplicationSettings::TIMEZONE);
+
+        if (false === is_string($timezone)) {
+            throw new InternalServerErrorException('Invalid timezone identifier type.');
+        }
+
+        if (false === @date_default_timezone_set($timezone)) {
+            throw new InternalServerErrorException('Invalid timezone identifier: ' . $timezone);
+        }
     }
 
     private function getServerRequest(): ServerRequestInterface
@@ -102,6 +127,18 @@ final class Application implements ApplicationInterface
         }
 
         return $this->container->get($key);
+    }
+
+    private function getSettings(): SettingsInterface
+    {
+        $type = SettingsInterface::class;
+        $instance = $this->resolveInstance('settings', $type);
+
+        if (is_object($instance) && is_a($instance, $type)) {
+            return $this->settings = $instance;
+        }
+
+        return $this->settings = new ApplicationSettings();
     }
 
     private function getServerRequestFactory(): ServerRequestFactoryInterface
@@ -168,7 +205,7 @@ final class Application implements ApplicationInterface
             return $this->logger = $instance;
         }
 
-        return $this->logger = new \Thingston\Log\LogManager();
+        return $this->logger = new LogManager();
     }
 
     private function getExceptionHandler(): ExceptionHandlerInterface

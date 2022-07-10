@@ -9,7 +9,9 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Thingston\Http\Application;
+use Thingston\Http\ApplicationSettings;
 use Thingston\Http\Exception\Handler\ExceptionHandler;
+use Thingston\Http\Exception\HttpExceptionInterface;
 use Thingston\Http\Exception\InternalServerErrorException;
 use Thingston\Http\Response\ResponseEmitter;
 use Thingston\Http\Router\RequestHandlerResolver;
@@ -19,9 +21,46 @@ use Thingston\Http\Router\RouteInterface;
 use Thingston\Http\Router\Router;
 use Thingston\Http\Router\RouterInterface;
 use Thingston\Log\LogManager;
+use Thingston\Settings\Settings;
 
 final class ApplicationTest extends TestCase
 {
+    public function testInvalidTimezoneType(): void
+    {
+        $this->expectException(HttpExceptionInterface::class);
+
+        new Application(
+            settings: new ApplicationSettings([
+                ApplicationSettings::TIMEZONE => 123,
+            ])
+        );
+    }
+
+    public function testInvalidTimezoneIdentifier(): void
+    {
+        $this->expectException(HttpExceptionInterface::class);
+
+        new Application(
+            settings: new ApplicationSettings([
+                ApplicationSettings::TIMEZONE => '123',
+            ])
+        );
+    }
+
+    public function testDefaultTimezone(): void
+    {
+        new Application(
+            settings: new Settings(),
+            server: [
+                'REQUEST_METHOD' => 'GET',
+                'HTTP_HOST' => 'example.org',
+                'REQUEST_URI' => '/',
+            ]
+        );
+
+        $this->assertSame('UTC', date_default_timezone_get());
+    }
+
     public function testRun(): void
     {
         $application = new Application(server: [
@@ -68,6 +107,7 @@ final class ApplicationTest extends TestCase
     public function testConstructArguments(): void
     {
         $application = new Application(
+            settings: new ApplicationSettings(),
             router: new Router(),
             serverRequestFactory: new HttpFactory(),
             requestHandlerResolevr: new RequestHandlerResolver(),
