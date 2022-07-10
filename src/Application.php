@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Thingston\Http;
 
+use Thingston\Http\Router\RouteDispatchHandler;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -76,8 +78,7 @@ final class Application implements ApplicationInterface
         }
 
         try {
-            $route = $this->getRouter()->match($request);
-            $response = $this->getRequestHandlerResolver()->resolve($route)->handle($request);
+            $response = $this->handle($request);
         } catch (Throwable $exception) {
             $response = $this->getExceptionHandler()->handle($request, $exception);
         }
@@ -249,5 +250,12 @@ final class Application implements ApplicationInterface
         }
 
         return $this->responseEmitter = new ResponseEmitter();
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $dispatcher = new RouteDispatchHandler($this->getRequestHandlerResolver(), $this->getRouter()->match($request));
+
+        return $dispatcher->handle($request);
     }
 }
