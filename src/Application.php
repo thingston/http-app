@@ -13,6 +13,7 @@ use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerInterface;
 use Thingston\Http\Exception\Handler\ExceptionHandler;
 use Thingston\Http\Exception\Handler\ExceptionHandlerInterface;
+use Thingston\Http\Exception\Handler\ExceptionHandlerSettings;
 use Thingston\Http\Exception\InternalServerErrorException;
 use Thingston\Http\Response\ResponseEmitter;
 use Thingston\Http\Response\ResponseEmitterInterface;
@@ -207,6 +208,22 @@ final class Application implements ApplicationInterface
         return $this->logger = new LogManager();
     }
 
+    private function getExceptionHandlerSettings(): SettingsInterface
+    {
+        $settings = $this->getSettings();
+
+        $hasEnv = $settings->has(ApplicationSettings::ENVIRONMENT);
+        $isProd = $hasEnv && ApplicationSettings::ENV_PRODUCTION !== $settings->get(ApplicationSettings::ENVIRONMENT);
+
+        $debug = $hasEnv && false === $isProd;
+
+        return new ExceptionHandlerSettings([
+            ExceptionHandlerSettings::DEBUG => $debug,
+            ExceptionHandlerSettings::LOG_ERRORS => true,
+            ExceptionHandlerSettings::LOG_DETAILS => true === $debug,
+        ]);
+    }
+
     private function getExceptionHandler(): ExceptionHandlerInterface
     {
         $type = ExceptionHandlerInterface::class;
@@ -217,6 +234,7 @@ final class Application implements ApplicationInterface
         }
 
         return $this->exceptionHandler = new ExceptionHandler(
+            settings: $this->getExceptionHandlerSettings(),
             logger: $this->getLogger()
         );
     }
