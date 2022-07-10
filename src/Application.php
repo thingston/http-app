@@ -10,7 +10,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Thingston\Http\Exception\Handler\ExceptionHandler;
 use Thingston\Http\Exception\Handler\ExceptionHandlerInterface;
@@ -19,8 +18,6 @@ use Thingston\Http\Response\ResponseEmitter;
 use Thingston\Http\Response\ResponseEmitterInterface;
 use Thingston\Http\Router\RequestHandlerResolver;
 use Thingston\Http\Router\RequestHandlerResolverInterface;
-use Thingston\Http\Router\RouteCollectionInterface;
-use Thingston\Http\Router\RouteInterface;
 use Thingston\Http\Router\Router;
 use Thingston\Http\Router\RouterInterface;
 use Thingston\Log\LogManager;
@@ -29,6 +26,8 @@ use Throwable;
 
 final class Application implements ApplicationInterface
 {
+    use ApplicationRouterTrait;
+
     /**
      * @var array<string, string>
      */
@@ -232,92 +231,5 @@ final class Application implements ApplicationInterface
         }
 
         return $this->responseEmitter = new ResponseEmitter();
-    }
-
-    public function addRoute(RouteInterface $route): RouterInterface
-    {
-        return $this->getRouter()->addRoute($route);
-    }
-
-    public function delete(
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->delete($pattern, $name, $handler);
-    }
-
-    public function get(
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->get($pattern, $name, $handler);
-    }
-
-    public function getRoutes(): RouteCollectionInterface
-    {
-        return $this->getRouter()->getRoutes();
-    }
-
-    public function head(
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->head($pattern, $name, $handler);
-    }
-
-    /**
-     * @param array<string> $methods
-     * @param string $pattern
-     * @param string $name
-     * @param RequestHandlerInterface|callable|string $handler
-     * @return RouteInterface
-     */
-    public function map(
-        array $methods,
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->map($methods, $pattern, $name, $handler);
-    }
-
-    public function match(ServerRequestInterface $request): RouteInterface
-    {
-        return $this->getRouter()->match($request);
-    }
-
-    public function options(
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->options($pattern, $name, $handler);
-    }
-
-    public function patch(
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->patch($pattern, $name, $handler);
-    }
-
-    public function post(
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->post($pattern, $name, $handler);
-    }
-
-    public function put(
-        string $pattern,
-        string $name,
-        RequestHandlerInterface|callable|string $handler
-    ): RouteInterface {
-        return $this->getRouter()->put($pattern, $name, $handler);
     }
 }
