@@ -81,6 +81,28 @@ final class ApplicationTest extends TestCase
         ob_end_clean();
     }
 
+    public function testPipe(): void
+    {
+        $application = new Application(server: [
+            'REQUEST_METHOD' => 'GET',
+            'HTTP_HOST' => 'example.org',
+            'REQUEST_URI' => '/',
+        ]);
+
+        $application->get('/', 'home', function () {
+            return new Response(200, [], 'It works');
+        });
+
+        $application->pipe(new TestMiddleware(' with Middleware!'));
+
+        ob_start();
+
+        $application->run();
+        $this->assertSame('It works with Middleware!', ob_get_contents());
+
+        ob_end_clean();
+    }
+
     public function testContainerDependencies(): void
     {
         $application = new Application(

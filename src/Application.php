@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Thingston\Http;
 
-use Thingston\Http\Router\RouteDispatchHandler;
 use GuzzleHttp\Psr7\HttpFactory;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Container\ContainerInterface;
@@ -12,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Thingston\Http\Exception\Handler\ExceptionHandler;
 use Thingston\Http\Exception\Handler\ExceptionHandlerInterface;
@@ -21,6 +21,7 @@ use Thingston\Http\Response\ResponseEmitter;
 use Thingston\Http\Response\ResponseEmitterInterface;
 use Thingston\Http\Router\RequestHandlerResolver;
 use Thingston\Http\Router\RequestHandlerResolverInterface;
+use Thingston\Http\Router\RouteDispatchHandler;
 use Thingston\Http\Router\Router;
 use Thingston\Http\Router\RouterInterface;
 use Thingston\Log\LogManager;
@@ -43,6 +44,7 @@ final class Application implements ApplicationInterface
      * @param RequestHandlerResolverInterface|null $requestHandlerResolevr
      * @param ResponseEmitterInterface|null $responseEmitter
      * @param ExceptionHandlerInterface|null $exceptionHandler
+     * @param array<MiddlewareInterface> $middlewares
      * @param array<string, string>|null $server
      */
     public function __construct(
@@ -54,6 +56,7 @@ final class Application implements ApplicationInterface
         private ?ResponseEmitterInterface $responseEmitter = null,
         private ?ExceptionHandlerInterface $exceptionHandler = null,
         private ?LoggerInterface $logger = null,
+        private array $middlewares = [],
         ?array $server = null
     ) {
         $this->container = $container;
@@ -62,6 +65,7 @@ final class Application implements ApplicationInterface
         $this->responseEmitter = $responseEmitter;
         $this->exceptionHandler = $exceptionHandler;
         $this->serverRequestFactory = $serverRequestFactory;
+        $this->middlewares = $middlewares;
         $this->server = $server ?? $_SERVER;
 
         $this->setDefaultTimezone();
@@ -69,6 +73,22 @@ final class Application implements ApplicationInterface
         $this->assertServerGlobals('REQUEST_METHOD');
         $this->assertServerGlobals('HTTP_HOST');
         $this->assertServerGlobals('REQUEST_URI');
+    }
+
+    public function pipe(MiddlewareInterface $middleware): self
+    {
+        $this->middlewares[] = $middleware;
+
+        return $this;
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        return (new RouteDispatchHandler(
+            $this->getRequestHandlerResolver(),
+            $this->getRouter()->match($request),
+            $this->middlewares
+        ))->handle($request);
     }
 
     public function run(?ServerRequestInterface $request = null): void
@@ -250,12 +270,5 @@ final class Application implements ApplicationInterface
         }
 
         return $this->responseEmitter = new ResponseEmitter();
-    }
-
-    public function handle(ServerRequestInterface $request): ResponseInterface
-    {
-        $dispatcher = new RouteDispatchHandler($this->getRequestHandlerResolver(), $this->getRouter()->match($request));
-
-        return $dispatcher->handle($request);
     }
 }
