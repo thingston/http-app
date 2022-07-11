@@ -645,16 +645,16 @@
         },
         {
             "name": "thingston/http-exception",
-            "version": "v1.1.8",
+            "version": "v1.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thingston/http-exception.git",
-                "reference": "f4830687daafc42fabee5f12514d3f0126d91ec4"
+                "reference": "afd29add2f901be1f571eabbcc1c04e14bf4d104"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thingston/http-exception/zipball/f4830687daafc42fabee5f12514d3f0126d91ec4",
-                "reference": "f4830687daafc42fabee5f12514d3f0126d91ec4",
+                "url": "https://api.github.com/repos/thingston/http-exception/zipball/afd29add2f901be1f571eabbcc1c04e14bf4d104",
+                "reference": "afd29add2f901be1f571eabbcc1c04e14bf4d104",
                 "shasum": ""
             },
             "require": {
@@ -700,7 +700,7 @@
                 "issues": "https://github.com/thingston/http-exception/issues",
                 "source": "https://github.com/thingston/http-exception"
             },
-            "time": "2022-07-11T04:11:45+00:00"
+            "time": "2022-07-11T19:10:27+00:00"
         },
         {
             "name": "thingston/http-response",
