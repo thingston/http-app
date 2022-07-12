@@ -233,15 +233,13 @@ final class Application implements ApplicationInterface
     {
         $settings = $this->getSettings();
 
-        $hasEnv = $settings->has(ApplicationSettings::ENVIRONMENT);
-        $isProd = $hasEnv && ApplicationSettings::ENV_PRODUCTION !== $settings->get(ApplicationSettings::ENVIRONMENT);
-
-        $debug = $hasEnv && false === $isProd;
+        $debug = false === (false === $settings->has(ApplicationSettings::ENVIRONMENT)
+            || ApplicationSettings::ENV_PRODUCTION === $settings->get(ApplicationSettings::ENVIRONMENT));
 
         return new ExceptionHandlerSettings([
             ExceptionHandlerSettings::DEBUG => $debug,
             ExceptionHandlerSettings::LOG_ERRORS => true,
-            ExceptionHandlerSettings::LOG_DETAILS => true === $debug,
+            ExceptionHandlerSettings::LOG_DETAILS => $debug,
         ]);
     }
 
