@@ -229,12 +229,17 @@ final class Application implements ApplicationInterface
         return $this->logger = new LogManager();
     }
 
-    private function getExceptionHandlerSettings(): SettingsInterface
+    private function isDebug(): bool
     {
         $settings = $this->getSettings();
 
-        $debug = false === (false === $settings->has(ApplicationSettings::ENVIRONMENT)
-            || ApplicationSettings::ENV_PRODUCTION === $settings->get(ApplicationSettings::ENVIRONMENT));
+        return false === (false === $settings->has(ApplicationSettings::ENVIRONMENT)
+            || ApplicationSettings::ENV_PRODUCTION !== $settings->get(ApplicationSettings::ENVIRONMENT));
+    }
+
+    private function getExceptionHandlerSettings(): SettingsInterface
+    {
+        $debug = $this->isDebug();
 
         return new ExceptionHandlerSettings([
             ExceptionHandlerSettings::DEBUG => $debug,
