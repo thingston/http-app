@@ -645,16 +645,16 @@
         },
         {
             "name": "thingston/http-exception",
-            "version": "v1.1.10",
+            "version": "v1.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thingston/http-exception.git",
-                "reference": "33b29d50adfe733ae8f8b2a917e9a37ea10ea4a0"
+                "reference": "ca44b4fbd17cf79c0852dc155b626775bf367cb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thingston/http-exception/zipball/33b29d50adfe733ae8f8b2a917e9a37ea10ea4a0",
-                "reference": "33b29d50adfe733ae8f8b2a917e9a37ea10ea4a0",
+                "url": "https://api.github.com/repos/thingston/http-exception/zipball/ca44b4fbd17cf79c0852dc155b626775bf367cb2",
+                "reference": "ca44b4fbd17cf79c0852dc155b626775bf367cb2",
                 "shasum": ""
             },
             "require": {
@@ -700,7 +700,7 @@
                 "issues": "https://github.com/thingston/http-exception/issues",
                 "source": "https://github.com/thingston/http-exception"
             },
-            "time": "2022-07-12T04:40:41+00:00"
+            "time": "2022-07-13T04:12:21+00:00"
         },
         {
             "name": "thingston/http-response",
@@ -1460,16 +1460,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b7648d4ee9321665acaf112e49da9fd93df8fbd5"
+                "reference": "8dbba631fa32f4b289404469c2afd6122fd61d67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b7648d4ee9321665acaf112e49da9fd93df8fbd5",
-                "reference": "b7648d4ee9321665acaf112e49da9fd93df8fbd5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8dbba631fa32f4b289404469c2afd6122fd61d67",
+                "reference": "8dbba631fa32f4b289404469c2afd6122fd61d67",
                 "shasum": ""
             },
             "require": {
@@ -1495,7 +1495,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.8.0"
+                "source": "https://github.com/phpstan/phpstan/tree/1.8.1"
             },
             "funding": [
                 {
@@ -1515,7 +1515,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-29T08:53:31+00:00"
+            "time": "2022-07-12T16:08:06+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3760,16 +3760,16 @@
         },
         {
             "name": "thingston/coverage-check",
-            "version": "v1.1.5",
+            "version": "v1.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thingston/coverage-check.git",
-                "reference": "680c627cce5fcd54f1874f7216654a7609baea57"
+                "reference": "d354ee1674997624413dd367dec9449ff1e5b740"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thingston/coverage-check/zipball/680c627cce5fcd54f1874f7216654a7609baea57",
-                "reference": "680c627cce5fcd54f1874f7216654a7609baea57",
+                "url": "https://api.github.com/repos/thingston/coverage-check/zipball/d354ee1674997624413dd367dec9449ff1e5b740",
+                "reference": "d354ee1674997624413dd367dec9449ff1e5b740",
                 "shasum": ""
             },
             "require": {
@@ -3815,7 +3815,7 @@
                 "issues": "https://github.com/thingston/coverage-check/issues",
                 "source": "https://github.com/thingston/coverage-check"
             },
-            "time": "2022-06-30T04:20:31+00:00"
+            "time": "2022-07-13T04:19:42+00:00"
         },
         {
             "name": "webmozart/assert",
