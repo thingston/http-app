@@ -233,8 +233,11 @@ final class Application implements ApplicationInterface
     {
         $settings = $this->getSettings();
 
-        return false === (false === $settings->has(ApplicationSettings::ENVIRONMENT)
-            || ApplicationSettings::ENV_PRODUCTION !== $settings->get(ApplicationSettings::ENVIRONMENT));
+        if (false === $settings->has(ApplicationSettings::ENVIRONMENT)) {
+            return false;
+        }
+
+        return ApplicationSettings::ENV_PRODUCTION !== $settings->get(ApplicationSettings::ENVIRONMENT);
     }
 
     private function getExceptionHandlerSettings(): SettingsInterface

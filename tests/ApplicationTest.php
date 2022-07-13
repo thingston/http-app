@@ -13,6 +13,7 @@ use Thingston\Http\ApplicationSettings;
 use Thingston\Http\Exception\Handler\ExceptionHandler;
 use Thingston\Http\Exception\HttpExceptionInterface;
 use Thingston\Http\Exception\InternalServerErrorException;
+use Thingston\Http\Exception\Renderer\ExceptionRendererInterface;
 use Thingston\Http\Response\ResponseEmitter;
 use Thingston\Http\Router\RequestHandlerResolver;
 use Thingston\Http\Router\Route;
@@ -170,7 +171,7 @@ final class ApplicationTest extends TestCase
         ob_start();
 
         $application->run();
-        $this->assertStringContainsString('not found', (string) ob_get_contents());
+        $this->assertStringContainsString(ExceptionRendererInterface::DEFAULT_MESSAGE, (string) ob_get_contents());
 
         ob_end_clean();
     }
@@ -189,7 +190,7 @@ final class ApplicationTest extends TestCase
         ob_start();
 
         $application->run();
-        $this->assertStringContainsString('not found', (string) ob_get_contents());
+        $this->assertStringContainsString(ExceptionRendererInterface::DEFAULT_MESSAGE, (string) ob_get_contents());
 
         ob_end_clean();
     }
@@ -208,7 +209,7 @@ final class ApplicationTest extends TestCase
         ob_start();
 
         $application->run();
-        $this->assertStringContainsString('not found', (string) ob_get_contents());
+        $this->assertStringContainsString(ExceptionRendererInterface::DEFAULT_MESSAGE, (string) ob_get_contents());
 
         ob_end_clean();
     }
@@ -227,7 +228,7 @@ final class ApplicationTest extends TestCase
         ob_start();
 
         $application->run();
-        $this->assertStringContainsString('not found', (string) ob_get_contents());
+        $this->assertStringContainsString(ExceptionRendererInterface::DEFAULT_MESSAGE, (string) ob_get_contents());
 
         ob_end_clean();
     }
@@ -246,7 +247,7 @@ final class ApplicationTest extends TestCase
         ob_start();
 
         $application->run();
-        $this->assertStringContainsString('not found', (string) ob_get_contents());
+        $this->assertStringContainsString(ExceptionRendererInterface::DEFAULT_MESSAGE, (string) ob_get_contents());
 
         ob_end_clean();
     }
